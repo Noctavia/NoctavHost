@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="NoctavHosting — Nos offres d'hébergement avec système de crédits."/>
+  <title>Tarifs — NoctavHosting</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <style>
+    .pricing-hero {
+      padding: 6rem 5vw 3rem;
+      text-align: center;
+    }
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 5vw 6rem;
+    }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.25rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .plan-card:hover {
+      border-color: rgba(108,92,231,0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.45);
+    }
+    .plan-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, rgba(108,92,231,0.09), var(--surface));
+      box-shadow: 0 0 50px rgba(108,92,231,0.18);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.28rem 1rem;
+      border-radius: 99px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .plan-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .plan-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .plan-credits {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .plan-specs {
+      list-style: none;
+      margin-bottom: 1.75rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+    .plan-specs li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .plan-specs li:last-child { border-bottom: none; }
+    .spec-label { color: var(--muted); }
+    .spec-value { font-weight: 500; font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+    .plan-renewal {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .paypal-btn-wrap {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Free plan button */
+    .btn-free {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-free:hover { border-color: var(--accent); background: rgba(108,92,231,0.08); }
+
+    /* Credit info bar */
+    .credit-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .credit-info-icon { font-size: 1.5rem; }
+    .credit-info p { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+    .credit-info strong { color: var(--text); }
+
+    /* FAQ */
+    .faq { padding: 5rem 5vw; max-width: 800px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 0;
+    }
+    .faq-q {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-q::after {
+      content: '+';
+      font-size: 1.25rem;
+      color: var(--accent);
+      transition: transform 0.2s;
+    }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+    .faq-a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.2s;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-top: 0.75rem; }
+  </style>
+</head>
+<body class="pricing-page">
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="pricing-hero reveal">
+    <div class="section-label" style="justify-content:center;">Nos offres</div>
+    <h1 class="section-title" style="font-size:clamp(2.2rem,5vw,4rem);">Paiement simple,<br/><span class="gradient-text">en crédits.</span></h1>
+    <p class="section-subtitle" style="margin:1rem auto 2.5rem;text-align:center;">
+      Achetez des crédits via PayPal et utilisez-les pour activer vos ressources. 1€ = 1 crédit.
+    </p>
+  </div>
+
+  <!-- CREDIT INFO -->
+  <div class="credit-info reveal" style="margin:0 5vw 3rem;">
+    <div class="credit-info-icon">💡</div>
+    <p>
+      <strong>Comment ça marche ?</strong><br/>
+      Achetez un pack de crédits → les crédits sont ajoutés à votre compte panel →
+      utilisez-les pour activer et renouveler vos serveurs. Le plan gratuit ne nécessite aucun crédit.
+    </p>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans-grid">
+
+    <!-- FREE -->
+    <div class="plan-card reveal" data-delay="0">
+      <div class="plan-name">Gratuit</div>
+      <div class="plan-price" style="color:var(--text)">0€</div>
+      <div class="plan-credits">0 Crédits — Toujours disponible</div>
+      <ul class="plan-specs">
+        <li><span class="spec-label">RAM</span><span class="spec-value">308 Mo</span></li>
+        <li><span class="spec-label">Stockage NVMe</span><span class="spec-value">716 Mo</span></li>
+        <li><span class="spec-label">CPU</span><span class="spec-value">25%</span></li>
+        <li><span class="spec-label">Serveurs</span><span class="spec-value">1</span></li>
+      </ul>
+      <div class="plan-renewal">🔄 Renouvellement tous les 4 jours</div>
+      <div class="paypal-btn-wrap">
+        <a href="panel.html" class="btn btn-free">Créer un compte gratuit →</a>
+      </div>
+    </div>
+
+    <!-- STARTER -->
+    <div class="plan-card reveal" data-delay="80">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price" style="color:var(--accent)">2.99€</div>
+      <div class="plan-credits">= 150 Crédits</div>
+      <ul class="plan-specs">
+        <li><span class="spec-label">RAM</span><span class="spec-value">1 512 Mo</span></li>
+        <li><span class="spec-label">Stockage NVMe</span><span class="spec-value">4 098 Mo</span></li>
+        <li><span class="spec-label">CPU</span><span class="spec-value">150%</span></li>
+        <li><span class="spec-label">Serveurs</span><span class="spec-value">2</span></li>
+      </ul>
+      <div class="plan-renewal">🔄 Renouvellement mensuel</div>
+      <div class="paypal-btn-wrap" id="paypal-btn-pack_150">
+        <div style="text-align:center;color:var(--muted);font-size:0.82rem">
+          ⏳ Chargement PayPal...
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card featured reveal" data-delay="160">
+      <div class="plan-badge">⭐ Populaire</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price gradient-text">3.99€</div>
+      <div class="plan-credits">= 200 Crédits</div>
+      <ul class="plan-specs">
+        <li><span class="spec-label">RAM</span><span class="spec-value">2 048 Mo</span></li>
+        <li><span class="spec-label">Stockage NVMe</span><span class="spec-value">8 190 Mo</span></li>
+        <li><span class="spec-label">CPU</span><span class="spec-value">200%</span></li>
+        <li><span class="spec-label">Serveurs</span><span class="spec-value">3</span></li>
+      </ul>
+      <div class="plan-renewal">🔄 Renouvellement mensuel</div>
+      <div class="paypal-btn-wrap" id="paypal-btn-pack_200">
+        <div style="text-align:center;color:var(--muted);font-size:0.82rem">
+          ⏳ Chargement PayPal...
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="plan-card reveal" data-delay="240">
+      <div class="plan-name">Advanced</div>
+      <div class="plan-price" style="color:var(--accent2)">6.99€</div>
+      <div class="plan-credits">= 400 Crédits</div>
+      <ul class="plan-specs">
+        <li><span class="spec-label">RAM</span><span class="spec-value">4 096 Mo</span></li>
+        <li><span class="spec-label">Stockage NVMe</span><span class="spec-value">16 380 Mo</span></li>
+        <li><span class="spec-label">CPU</span><span class="spec-value">300%</span></li>
+        <li><span class="spec-label">Serveurs</span><span class="spec-value">5</span></li>
+      </ul>
+      <div class="plan-renewal">🔄 Renouvellement mensuel</div>
+      <div class="paypal-btn-wrap" id="paypal-btn-pack_400">
+        <div style="text-align:center;color:var(--muted);font-size:0.82rem">
+          ⏳ Chargement PayPal...
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERT -->
+    <div class="plan-card reveal" data-delay="320">
+      <div class="plan-name">Expert</div>
+      <div class="plan-price" style="color:var(--accent3)">9.99€</div>
+      <div class="plan-credits">= 600 Crédits</div>
+      <ul class="plan-specs">
+        <li><span class="spec-label">RAM</span><span class="spec-value">8 190 Mo</span></li>
+        <li><span class="spec-label">Stockage NVMe</span><span class="spec-value">32 770 Mo</span></li>
+        <li><span class="spec-label">CPU</span><span class="spec-value">500%</span></li>
+        <li><span class="spec-label">Serveurs</span><span class="spec-value">Illimités</span></li>
+      </ul>
+      <div class="plan-renewal">🔄 Renouvellement mensuel</div>
+      <div class="paypal-btn-wrap" id="paypal-btn-pack_600">
+        <div style="text-align:center;color:var(--muted);font-size:0.82rem">
+          ⏳ Chargement PayPal...
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem;">
+      <div class="section-label" style="justify-content:center;">Questions fréquentes</div>
+      <h2 class="section-title">On répond à tout.</h2>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q">Comment recevoir mes crédits après paiement ?</div>
+      <div class="faq-a">Après confirmation du paiement PayPal, les crédits sont ajoutés manuellement à votre compte panel sous 24h. Rejoignez notre Discord pour accélérer le processus.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q">Les crédits expirent-ils ?</div>
+      <div class="faq-a">Non, vos crédits n'expirent jamais. Vous pouvez les utiliser quand vous le souhaitez.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q">Le paiement PayPal est-il sécurisé ?</div>
+      <div class="faq-a">Oui, nous utilisons le SDK officiel PayPal. Vos données bancaires ne transitent jamais par nos serveurs.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q">Puis-je combiner plusieurs packs de crédits ?</div>
+      <div class="faq-a">Absolument ! Vous pouvez acheter autant de packs que vous souhaitez. Les crédits s'accumulent sur votre compte.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q">Y a-t-il des remboursements ?</div>
+      <div class="faq-a">Les crédits déjà utilisés ne sont pas remboursables. Pour les crédits non utilisés, contactez-nous sur Discord dans les 7 jours suivant l'achat.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="pricing.html">Tarifs</a>
+      <a href="panel.html">Panel</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/payment.js"></script>
+  <script>
+    // FAQ toggle
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => {
+        q.parentElement.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>

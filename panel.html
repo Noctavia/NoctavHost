@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel — NoctavHosting</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <style>
+    .panel-hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 5vw;
+    }
+    .panel-card-big {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3.5rem;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-card-big::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(108,92,231,0.12), transparent 65%);
+      pointer-events: none;
+    }
+    .panel-url-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: rgba(108,92,231,0.08);
+      border: 1px solid rgba(108,92,231,0.18);
+      border-radius: 10px;
+      padding: 0.9rem 1.25rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .panel-url-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--text); }
+
+    .panel-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 5vw;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+    .info-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .info-card p {
+      color: var(--muted);
+      font-size: 0.87rem;
+      line-height: 1.65;
+    }
+    .info-card .icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="panel-hero">
+    <div class="reveal">
+      <div class="section-label" style="justify-content:center;">Accès au panel</div>
+      <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);margin-bottom:0.5rem;">
+        Gérez vos serveurs<br/><span class="gradient-text">en temps réel.</span>
+      </h1>
+      <p style="color:var(--muted);margin-bottom:3rem;">Connectez-vous à notre panel Pyrodactyl pour gérer vos ressources.</p>
+
+      <div class="panel-card-big">
+        <div class="panel-status">
+          <span class="pulse-dot"></span>
+          Panel en ligne — Pyrodactyl
+        </div>
+
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">
+          Accéder au panel
+        </h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem;">
+          ⚠️ L'adresse du panel sera disponible une fois le domaine public configuré.
+        </p>
+
+        <div class="panel-url-box">
+          <span class="panel-url-text" id="panel-url-display">En attente du domaine public...</span>
+          <button class="copy-btn" onclick="copyUrl()">Copier</button>
+        </div>
+
+        <a href="#" id="panel-link" class="btn btn-primary shimmer-btn" style="width:100%;justify-content:center;margin-bottom:1rem;" onclick="openPanel(event)">
+          Ouvrir le panel →
+        </a>
+        <a href="pricing.html" class="btn btn-ghost" style="width:100%;justify-content:center;">
+          Voir les offres
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="info-cards">
+    <div class="info-card reveal" data-delay="0">
+      <div class="icon">1️⃣</div>
+      <h3>Créer un compte</h3>
+      <p>Connectez-vous au panel et créez votre compte avec l'email fourni lors de l'inscription.</p>
+    </div>
+    <div class="info-card reveal" data-delay="100">
+      <div class="icon">2️⃣</div>
+      <h3>Choisir un plan</h3>
+      <p>Achetez des crédits sur la page <a href="pricing.html" style="color:var(--accent)">Tarifs</a> et activez les ressources de votre choix.</p>
+    </div>
+    <div class="info-card reveal" data-delay="200">
+      <div class="icon">3️⃣</div>
+      <h3>Déployer votre serveur</h3>
+      <p>Sélectionnez votre type de serveur (Minecraft, Bot, FiveM...) et démarrez en un clic.</p>
+    </div>
+    <div class="info-card reveal" data-delay="300">
+      <div class="icon">4️⃣</div>
+      <h3>Gérer en temps réel</h3>
+      <p>Console live, gestionnaire de fichiers, sauvegardes automatiques — tout depuis le panel.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="pricing.html">Tarifs</a>
+      <a href="panel.html">Panel</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // ⚠️ Remplace cette URL par ton vrai domaine public quand tu en auras un
+    const PANEL_URL = 'https://adenological-sana-unexhaustedly.ngrok-free.dev';
+
+    function openPanel(e) {
+      if (!PANEL_URL) {
+        e.preventDefault();
+        showToast('⚠️ Le panel n\'est pas encore accessible publiquement. Configure d\'abord ton domaine.', 'error', 5000);
+      } else {
+        window.open(PANEL_URL, '_blank');
+      }
+    }
+
+    function copyUrl() {
+      if (!PANEL_URL) {
+        showToast('Aucun domaine configuré pour l\'instant.', 'error');
+        return;
+      }
+      navigator.clipboard.writeText(PANEL_URL).then(() => {
+        showToast('✓ URL copiée !', 'success', 2000);
+      });
+    }
+
+    if (PANEL_URL) {
+      document.getElementById('panel-url-display').textContent = PANEL_URL;
+    }
+  </script>
+</body>
+</html>
