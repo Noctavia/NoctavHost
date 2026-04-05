@@ -1,0 +1,114 @@
+/* ── KEYFRAMES ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50%       { box-shadow: 0 0 50px var(--accent-glow), 0 0 80px var(--accent-glow); }
+}
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(108,92,231,0.2); }
+  50%       { border-color: rgba(108,92,231,0.6); }
+}
+
+/* ── HERO STAGGER ── */
+.hero-badge      { animation: fadeUp 0.55s ease 0.05s both; }
+.hero-title      { animation: fadeUp 0.65s ease 0.12s both; }
+.hero-desc       { animation: fadeUp 0.65s ease 0.2s both; }
+.hero-actions    { animation: fadeUp 0.65s ease 0.28s both; }
+.hero-stats      { animation: fadeUp 0.65s ease 0.36s both; }
+
+/* ── FLOATING CARD ── */
+.float-card { animation: float 5s ease-in-out infinite; }
+.float-card:nth-child(2) { animation-delay: 0.8s; }
+.float-card:nth-child(3) { animation-delay: 1.6s; }
+
+/* ── SHIMMER ── */
+.shimmer-btn {
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+  background-size: 200% auto;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* ── GLOW RING ── */
+.glow-ring {
+  position: relative;
+}
+.glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.glow-ring:hover::after { opacity: 0.5; }
+
+/* ── LOADING ── */
+.loader {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+/* ── NOTIFICATION ── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 1000;
+  animation: slideLeft 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  max-width: 320px;
+}
+.toast.success { border-color: rgba(0,184,148,0.3); }
+.toast.error   { border-color: rgba(253,121,168,0.3); }
+.toast-icon    { font-size: 1.25rem; }
+.toast-msg     { font-size: 0.88rem; line-height: 1.4; }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-accent { background: rgba(108,92,231,0.15); color: var(--accent); border: 1px solid rgba(108,92,231,0.25); }
+.badge-green  { background: rgba(0,184,148,0.15);  color: var(--success); border: 1px solid rgba(0,184,148,0.25); }
+.badge-pink   { background: rgba(253,121,168,0.15); color: var(--accent3); border: 1px solid rgba(253,121,168,0.25); }
