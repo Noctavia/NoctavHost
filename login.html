@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NoctavHosting — Connexion / Inscription</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <style>
+    .auth-wrapper {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 5vw;
+    }
+    .auth-box {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-box::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(108,92,231,0.15), transparent 70%);
+      pointer-events: none;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 2rem;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 7px;
+      cursor: none;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+    }
+    .form-group input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,92,231,0.1);
+    }
+    .form-group input::placeholder { color: var(--muted); opacity: 0.5; }
+    .auth-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: none;
+      transition: all 0.2s;
+      box-shadow: 0 0 25px var(--accent-glow);
+      margin-top: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    .auth-submit:hover { transform: translateY(-2px); box-shadow: 0 0 45px var(--accent-glow); }
+    .auth-submit:disabled { opacity: 0.5; transform: none; }
+    .auth-divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: var(--border);
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .alert-error { background: rgba(214,48,49,0.1); border: 1px solid rgba(214,48,49,0.2); color: #ff7675; }
+    .alert-success { background: rgba(0,184,148,0.1); border: 1px solid rgba(0,184,148,0.2); color: var(--success); }
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .panel-redirect {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .panel-redirect .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+  </nav>
+
+  <div class="auth-wrapper">
+    <div class="auth-box reveal">
+
+      <div style="text-align:center;margin-bottom:1.75rem;">
+        <div class="tag" style="margin:0 auto 1rem;">🔐 Espace membre</div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;">
+          Bienvenue sur<br/><span class="gradient-text">NoctavHosting</span>
+        </h1>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Connexion</button>
+        <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Inscription</button>
+      </div>
+
+      <div id="alert-box" class="alert"></div>
+
+      <!-- FORMULAIRE CONNEXION -->
+      <div id="form-login">
+        <div class="form-group">
+          <label>Adresse email</label>
+          <input type="email" id="login-email" placeholder="ton@email.com" autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <button class="auth-submit" id="btn-login" onclick="handleLogin()">Se connecter →</button>
+      </div>
+
+      <!-- FORMULAIRE INSCRIPTION -->
+      <div id="form-register" style="display:none;">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" id="reg-firstname" placeholder="Kylian"/>
+        </div>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" id="reg-lastname" placeholder="Dupont"/>
+        </div>
+        <div class="form-group">
+          <label>Nom d'utilisateur</label>
+          <input type="text" id="reg-username" placeholder="kylian42"/>
+        </div>
+        <div class="form-group">
+          <label>Adresse email</label>
+          <input type="email" id="reg-email" placeholder="ton@email.com"/>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="reg-password" placeholder="Minimum 8 caractères"/>
+        </div>
+        <button class="auth-submit" id="btn-register" onclick="handleRegister()">Créer mon compte →</button>
+      </div>
+
+      <!-- SUCCÈS REDIRECTION -->
+      <div class="panel-redirect" id="panel-redirect">
+        <div class="big-icon">🎉</div>
+        <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">Compte créé !</p>
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;">Tu vas être redirigé vers le panel dans quelques secondes...</p>
+        <a id="panel-link" href="#" class="btn btn-primary" style="justify-content:center;">Accéder au panel →</a>
+      </div>
+
+      <div class="auth-divider">ou</div>
+      <p style="text-align:center;color:var(--muted);font-size:0.8rem;">
+        Besoin d'aide ? <a href="contact.html" style="color:var(--accent);text-decoration:none;">Contacte-nous</a>
+      </p>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="pricing.html">Tarifs</a>
+      <a href="panel.html">Panel</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // ── CONFIG ── À remplacer par ta vraie clé API admin Pterodactyl
+    const PANEL_URL   = 'https://adenological-sana-unexhaustedly.ngrok-free.dev';
+    const ADMIN_KEY   = 'TON_API_KEY_ADMIN_PTERODACTYL'; // ← à remplacer
+
+    function switchTab(tab) {
+      document.getElementById('form-login').style.display    = tab === 'login'    ? '' : 'none';
+      document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
+      document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      hideAlert();
+    }
+
+    function showAlert(msg, type) {
+      const el = document.getElementById('alert-box');
+      el.className = 'alert alert-' + type;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideAlert() {
+      document.getElementById('alert-box').style.display = 'none';
+    }
+
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? '<span class="spinner"></span> Chargement...'
+        : (btnId === 'btn-login' ? 'Se connecter →' : 'Créer mon compte →');
+    }
+
+    async function handleLogin() {
+      hideAlert();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      if (!email || !password) return showAlert('Remplis tous les champs.', 'error');
+
+      setLoading('btn-login', true);
+
+      try {
+        // Pterodactyl n'a pas d'API login publique — on redirige vers le panel
+        // avec un message pour que l'utilisateur se connecte directement
+        await new Promise(r => setTimeout(r, 800));
+        window.open(PANEL_URL, '_blank');
+        showAlert('Redirection vers le panel...', 'success');
+      } catch (e) {
+        showAlert('Erreur de connexion. Réessaie.', 'error');
+      } finally {
+        setLoading('btn-login', false);
+      }
+    }
+
+    async function handleRegister() {
+      hideAlert();
+      const firstname = document.getElementById('reg-firstname').value.trim();
+      const lastname  = document.getElementById('reg-lastname').value.trim();
+      const username  = document.getElementById('reg-username').value.trim();
+      const email     = document.getElementById('reg-email').value.trim();
+      const password  = document.getElementById('reg-password').value;
+
+      if (!firstname || !lastname || !username || !email || !password)
+        return showAlert('Remplis tous les champs.', 'error');
+
+      if (password.length < 8)
+        return showAlert('Le mot de passe doit faire au moins 8 caractères.', 'error');
+
+      if (!/^[a-zA-Z0-9_-]+$/.test(username))
+        return showAlert('Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, _ et -.', 'error');
+
+      setLoading('btn-register', true);
+
+      try {
+        const res = await fetch(PANEL_URL + '/api/application/users', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + ADMIN_KEY,
+            'Content-Type':  'application/json',
+            'Accept':        'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            username,
+            first_name: firstname,
+            last_name:  lastname,
+            password,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Succès
+          document.getElementById('form-register').style.display = 'none';
+          document.getElementById('panel-redirect').style.display = 'block';
+          document.getElementById('panel-link').href = PANEL_URL;
+          document.querySelector('.auth-divider').style.display = 'none';
+          document.querySelector('.auth-tabs').style.display = 'none';
+
+          // Redirection auto après 4s
+          setTimeout(() => { window.location.href = PANEL_URL; }, 4000);
+
+        } else {
+          // Erreur API Pterodactyl
+          const errMsg = data?.errors?.[0]?.detail || 'Erreur lors de la création du compte.';
+          showAlert(errMsg, 'error');
+        }
+
+      } catch (e) {
+        showAlert('Impossible de contacter le panel. Vérifie que le serveur est en ligne.', 'error');
+      } finally {
+        setLoading('btn-register', false);
+      }
+    }
+
+    // Enter pour valider
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (document.getElementById('form-login').style.display !== 'none') handleLogin();
+        else handleRegister();
+      }
+    });
+  </script>
+</body>
+</html>
