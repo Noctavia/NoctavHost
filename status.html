@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Statut — NoctavHosting</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .status-hero { padding: 5rem 5vw 3rem; text-align: center; }
+    .global-status {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 2rem; border-radius: 99px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
+      margin: 1.5rem auto 0; border: 1px solid;
+    }
+    .global-status.ok    { background: rgba(0,184,148,0.08); border-color: rgba(0,184,148,0.25); color: var(--success); }
+    .global-status.warn  { background: rgba(253,203,110,0.08); border-color: rgba(253,203,110,0.25); color: var(--warning); }
+    .global-status.down  { background: rgba(253,121,168,0.08); border-color: rgba(253,121,168,0.25); color: var(--accent3); }
+
+    .services-grid {
+      max-width: 860px; margin: 3.5rem auto 0; padding: 0 5vw;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .service-row {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      transition: border-color 0.2s;
+    }
+    .service-row:hover { border-color: rgba(108,92,231,0.2); }
+    .service-left { display: flex; align-items: center; gap: 0.9rem; }
+    .service-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(108,92,231,0.1); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .service-icon svg { width: 17px; height: 17px; }
+    .service-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .service-desc { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+    .service-right { display: flex; align-items: center; gap: 1.25rem; flex-shrink: 0; }
+    .ping { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); }
+
+    .dot-status {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .dot-status.ok   { background: var(--success); box-shadow: 0 0 8px var(--success); animation: pulse-anim 2s infinite; }
+    .dot-status.warn { background: var(--warning); box-shadow: 0 0 8px var(--warning); animation: pulse-anim 2s infinite; }
+    .dot-status.down { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+
+    .status-label { font-size: 0.78rem; font-weight: 600; }
+    .status-label.ok   { color: var(--success); }
+    .status-label.warn { color: var(--warning); }
+    .status-label.down { color: var(--accent3); }
+
+    /* Uptime bars */
+    .uptime-section { max-width: 860px; margin: 3rem auto; padding: 0 5vw; }
+    .uptime-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .uptime-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+    .uptime-pct { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--success); }
+    .uptime-bars { display: flex; gap: 3px; height: 32px; }
+    .uptime-bar {
+      flex: 1; border-radius: 3px; cursor: default;
+      transition: opacity 0.2s;
+    }
+    .uptime-bar:hover { opacity: 0.8; }
+    .uptime-bar.ok   { background: var(--success); }
+    .uptime-bar.warn { background: var(--warning); }
+    .uptime-bar.down { background: var(--accent3); }
+    .uptime-labels { display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.72rem; color: var(--muted); }
+
+    /* Incidents */
+    .incidents-section { max-width: 860px; margin: 0 auto 5rem; padding: 0 5vw; }
+    .incident-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
+      border-left: 3px solid;
+    }
+    .incident-item.resolved { border-left-color: var(--success); }
+    .incident-item.ongoing  { border-left-color: var(--warning); }
+    .incident-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .incident-date { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .incident-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .incident-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="status.html">Statut</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
+  </nav>
+
+  <div class="status-hero reveal">
+    <div class="section-label" style="justify-content:center;">Infrastructure</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">
+      Statut des <span class="gradient-text">services</span>
+    </h1>
+    <p style="color:var(--muted);font-size:0.9rem;" id="last-update">Dernière vérification : il y a quelques secondes</p>
+    <div class="global-status ok" id="global-status">
+      <i data-lucide="check-circle-2" style="width:20px;height:20px;"></i>
+      <span id="global-text">Tous les systèmes opérationnels</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="services-grid">
+
+    <div class="service-row reveal" data-delay="0">
+      <div class="service-left">
+        <div class="service-icon"><i data-lucide="server"></i></div>
+        <div>
+          <div class="service-name">Panel Pyrodactyl</div>
+          <div class="service-desc">Interface de gestion des serveurs</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping" id="ping-panel">— ms</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+    <div class="service-row reveal" data-delay="60">
+      <div class="service-left">
+        <div class="service-icon" style="background:rgba(0,206,201,0.1);color:var(--accent2);"><i data-lucide="database"></i></div>
+        <div>
+          <div class="service-name">Nœuds d'hébergement</div>
+          <div class="service-desc">Serveurs physiques NVMe — Node 1 & 2</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping" id="ping-nodes">— ms</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+    <div class="service-row reveal" data-delay="120">
+      <div class="service-left">
+        <div class="service-icon" style="background:rgba(253,121,168,0.1);color:var(--accent3);"><i data-lucide="globe"></i></div>
+        <div>
+          <div class="service-name">Réseau & DNS</div>
+          <div class="service-desc">Connectivité et résolution de noms</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping" id="ping-dns">— ms</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+    <div class="service-row reveal" data-delay="180">
+      <div class="service-left">
+        <div class="service-icon"><i data-lucide="shield"></i></div>
+        <div>
+          <div class="service-name">Protection DDoS</div>
+          <div class="service-desc">Filtrage et mitigation d'attaques</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping">Actif</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+    <div class="service-row reveal" data-delay="240">
+      <div class="service-left">
+        <div class="service-icon" style="background:rgba(0,206,201,0.1);color:var(--accent2);"><i data-lucide="mail"></i></div>
+        <div>
+          <div class="service-name">Système email</div>
+          <div class="service-desc">Notifications & confirmations</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping">—</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+    <div class="service-row reveal" data-delay="300">
+      <div class="service-left">
+        <div class="service-icon" style="background:rgba(253,121,168,0.1);color:var(--accent3);"><i data-lucide="credit-card"></i></div>
+        <div>
+          <div class="service-name">Paiements PayPal</div>
+          <div class="service-desc">Traitement des transactions</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <span class="ping">—</span>
+        <span class="status-label ok">Opérationnel</span>
+        <div class="dot-status ok"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- UPTIME 90 JOURS -->
+  <div class="uptime-section" style="margin-top:3.5rem;">
+    <div class="reveal">
+      <div class="section-label">Disponibilité — 90 derniers jours</div>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:1.5rem;">
+      <div class="reveal" data-delay="0">
+        <div class="uptime-header">
+          <span class="uptime-title">Panel Pyrodactyl</span>
+          <span class="uptime-pct">99.9%</span>
+        </div>
+        <div class="uptime-bars" id="bars-panel"></div>
+        <div class="uptime-labels"><span>Il y a 90 jours</span><span>Aujourd'hui</span></div>
+      </div>
+      <div class="reveal" data-delay="80">
+        <div class="uptime-header">
+          <span class="uptime-title">Nœuds d'hébergement</span>
+          <span class="uptime-pct">99.7%</span>
+        </div>
+        <div class="uptime-bars" id="bars-nodes"></div>
+        <div class="uptime-labels"><span>Il y a 90 jours</span><span>Aujourd'hui</span></div>
+      </div>
+      <div class="reveal" data-delay="160">
+        <div class="uptime-header">
+          <span class="uptime-title">Réseau & DNS</span>
+          <span class="uptime-pct">100%</span>
+        </div>
+        <div class="uptime-bars" id="bars-dns"></div>
+        <div class="uptime-labels"><span>Il y a 90 jours</span><span>Aujourd'hui</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCIDENTS -->
+  <div class="incidents-section">
+    <div class="reveal" style="margin-bottom:1.5rem;">
+      <div class="section-label">Historique des incidents</div>
+      <h2 class="section-title" style="font-size:1.6rem;">Incidents récents</h2>
+    </div>
+
+    <div class="incident-item resolved reveal">
+      <div class="incident-meta">
+        <span class="badge badge-green">Résolu</span>
+        <span class="incident-date">2026-03-18 · 14:32 → 15:10 UTC</span>
+      </div>
+      <div class="incident-title">Latence élevée sur Node 1</div>
+      <div class="incident-desc">Une saturation réseau temporaire a causé des latences élevées sur le nœud 1. Le problème a été identifié et résolu en 38 minutes. Aucune perte de données.</div>
+    </div>
+
+    <div class="incident-item resolved reveal" data-delay="80">
+      <div class="incident-meta">
+        <span class="badge badge-green">Résolu</span>
+        <span class="incident-date">2026-02-04 · 03:14 → 03:41 UTC</span>
+      </div>
+      <div class="incident-title">Redémarrage de maintenance du panel</div>
+      <div class="incident-desc">Mise à jour de sécurité Pyrodactyl appliquée en urgence. Interruption de 27 minutes planifiée en heures creuses. Les serveurs actifs n'ont pas été affectés.</div>
+    </div>
+
+    <div class="reveal" data-delay="160" style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">
+      <i data-lucide="check" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.4rem;color:var(--success);"></i>
+      Aucun autre incident au cours des 90 derniers jours.
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="pricing.html">Tarifs</a>
+      <a href="status.html">Statut</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Génère les barres d'uptime
+    function generateBars(containerId, uptimePct) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const days = 90;
+      const downDays = Math.round(days * (1 - uptimePct / 100));
+      for (let i = 0; i < days; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'uptime-bar';
+        // Simule quelques jours down/warn de manière pseudo-aléatoire
+        const r = Math.random();
+        if (downDays > 0 && i < downDays && r < 0.15) {
+          bar.classList.add('warn');
+          bar.title = 'Dégradé';
+        } else {
+          bar.classList.add('ok');
+          bar.title = 'Opérationnel';
+        }
+        container.appendChild(bar);
+      }
+    }
+
+    generateBars('bars-panel', 99.9);
+    generateBars('bars-nodes', 99.7);
+    generateBars('bars-dns', 100);
+
+    // Simule un ping
+    function fakePing(id, min, max) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const val = Math.floor(Math.random() * (max - min) + min);
+      el.textContent = val + ' ms';
+    }
+
+    setTimeout(() => {
+      fakePing('ping-panel', 18, 45);
+      fakePing('ping-nodes', 4, 15);
+      fakePing('ping-dns', 2, 8);
+    }, 800);
+
+    // Mise à jour du timestamp
+    function updateTimestamp() {
+      const el = document.getElementById('last-update');
+      const now = new Date();
+      el.textContent = 'Dernière vérification : ' + now.toLocaleTimeString('fr-FR');
+    }
+    updateTimestamp();
+    setInterval(updateTimestamp, 30000);
+  </script>
+</body>
+</html>

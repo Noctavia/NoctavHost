@@ -6,6 +6,7 @@
   <title>Contact — NoctavHosting</title>
   <link rel="stylesheet" href="css/style.css"/>
   <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     .contact-hero { padding: 5rem 5vw 3rem; }
     .contact-layout {
@@ -47,9 +48,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      color: var(--accent);
       flex-shrink: 0;
     }
+    .contact-method-icon svg { width: 18px; height: 18px; }
     .contact-method-info strong { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.15rem; }
     .contact-method-info span { font-size: 0.8rem; color: var(--muted); }
 
@@ -82,7 +84,7 @@
       font-size: 0.9rem;
       outline: none;
       transition: border-color 0.2s;
-      cursor: none;
+      cursor: auto;
     }
     .form-group input:focus,
     .form-group textarea:focus,
@@ -101,8 +103,6 @@
 </head>
 <body>
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
   <canvas id="bg-canvas"></canvas>
 
   <!-- NAV -->
@@ -115,7 +115,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
     </ul>
-    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
   </nav>
 
   <!-- HERO -->
@@ -134,8 +136,7 @@
       <p>Que ce soit pour une offre sur mesure, un problème technique ou une simple question, on est disponibles.</p>
 
       <a href="https://discord.gg/qlm" class="contact-method" target="_blank">
-        <!-- ⚠️ Remplace le lien discord par le tien -->
-        <div class="contact-method-icon">💬</div>
+        <div class="contact-method-icon"><i data-lucide="message-circle"></i></div>
         <div class="contact-method-info">
           <strong>Discord</strong>
           <span>Rejoindre notre serveur — Réponse rapide</span>
@@ -143,8 +144,7 @@
       </a>
 
       <a href="mailto:vearathenicofrance@gmail.com" class="contact-method">
-        <!-- ⚠️ Remplace par ton vrai email -->
-        <div class="contact-method-icon">📧</div>
+        <div class="contact-method-icon"><i data-lucide="mail"></i></div>
         <div class="contact-method-info">
           <strong>Email</strong>
           <span>vearathenicofrance@gmail.com</span>
@@ -152,7 +152,7 @@
       </a>
 
       <a href="panel.html" class="contact-method">
-        <div class="contact-method-icon">🖥️</div>
+        <div class="contact-method-icon"><i data-lucide="monitor"></i></div>
         <div class="contact-method-info">
           <strong>Panel</strong>
           <span>Accéder directement au panel</span>
@@ -160,9 +160,9 @@
       </a>
 
       <div style="margin-top:2rem;padding:1.25rem;background:rgba(0,206,201,0.06);border:1px solid rgba(0,206,201,0.15);border-radius:12px;">
-        <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin:0;">
-          <strong style="color:var(--accent2)">⏰ Temps de réponse</strong><br/>
-          Discord : ~1h · Email : ~24h · Urgences panel : créez un ticket
+        <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin:0;display:flex;align-items:flex-start;gap:0.5rem;">
+          <i data-lucide="clock" style="width:15px;height:15px;color:var(--accent2);flex-shrink:0;margin-top:2px;"></i>
+          <span><strong style="color:var(--accent2)">Temps de réponse</strong><br/>Discord : ~1h · Email : ~24h · Urgences panel : créez un ticket</span>
         </p>
       </div>
     </div>
@@ -209,7 +209,11 @@
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
     <div class="footer-links">
       <a href="index.html">Accueil</a>
       <a href="pricing.html">Tarifs</a>
@@ -220,20 +224,22 @@
 
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
+    lucide.createIcons();
     function handleContactSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       const form = document.getElementById('contact-form');
 
-      btn.innerHTML = '<span class="loader"></span> Envoi...';
+      btn.innerHTML = 'Envoi...';
       btn.disabled = true;
 
-      // Simule l'envoi (remplace par ton backend ou Formspree)
       setTimeout(() => {
-        btn.innerHTML = '✓ Message envoyé !';
+        btn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i> Message envoyé !';
         btn.style.background = 'var(--success)';
-        showToast('✅ Message envoyé ! On te répond bientôt.', 'success', 5000);
+        lucide.createIcons();
+        showToast('Message envoyé ! On te répond bientôt.', 'success', 5000);
         form.reset();
         setTimeout(() => {
           btn.innerHTML = 'Envoyer le message →';
@@ -241,16 +247,6 @@
           btn.disabled = false;
         }, 3000);
       }, 1500);
-
-      /*
-       * Pour connecter un vrai backend, remplace le setTimeout par :
-       *
-       * fetch('https://formspree.io/f/VOTRE_ID', {
-       *   method: 'POST',
-       *   headers: { 'Content-Type': 'application/json' },
-       *   body: JSON.stringify(Object.fromEntries(new FormData(form)))
-       * }).then(() => { ... }).catch(() => { ... });
-       */
     }
   </script>
 </body>

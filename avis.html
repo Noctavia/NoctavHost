@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avis — NoctavHosting</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .avis-hero { padding: 5rem 5vw 3rem; text-align: center; }
+    .stats-row {
+      display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+      margin: 2.5rem auto 3.5rem; max-width: 700px;
+    }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem 2rem; text-align: center; flex: 1; min-width: 150px;
+    }
+    .stat-big {
+      font-family: 'Syne', sans-serif; font-size: 2.8rem;
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+    }
+    .stat-lbl { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .stars { display: flex; gap: 3px; justify-content: center; margin: 0.5rem 0; }
+    .stars svg { width: 16px; height: 16px; }
+    .star-fill { color: #fdcb6e; fill: #fdcb6e; }
+    .star-half { color: #fdcb6e; }
+    .star-empty { color: var(--border); }
+
+    .rating-bars { max-width: 320px; margin: 0 auto; }
+    .rating-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; font-size: 0.78rem; color: var(--muted); }
+    .rating-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .rating-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 1s ease; }
+    .rating-count { min-width: 24px; text-align: right; }
+
+    /* Grid avis */
+    .avis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      max-width: 1100px; margin: 0 auto; padding: 0 5vw 5rem;
+    }
+    .avis-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.75rem;
+      transition: all 0.3s ease;
+    }
+    .avis-card:hover { border-color: rgba(108,92,231,0.25); transform: translateY(-3px); box-shadow: 0 16px 50px rgba(0,0,0,0.35); }
+    .avis-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+    .avis-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .avis-user { margin-left: 0.75rem; flex: 1; }
+    .avis-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.92rem; }
+    .avis-plan { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+    .avis-date { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; flex-shrink: 0; }
+    .avis-stars { display: flex; gap: 2px; margin-bottom: 0.85rem; }
+    .avis-stars svg { width: 13px; height: 13px; }
+    .avis-text { font-size: 0.87rem; color: var(--muted); line-height: 1.65; }
+    .avis-tag {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(108,92,231,0.08); border: 1px solid rgba(108,92,231,0.15);
+      padding: 0.2rem 0.55rem; border-radius: 99px;
+      font-size: 0.7rem; color: var(--accent); margin-top: 1rem;
+    }
+    .avis-tag svg { width: 10px; height: 10px; }
+
+    /* Formulaire avis */
+    .avis-form-section {
+      max-width: 620px; margin: 0 auto; padding: 0 5vw 6rem;
+    }
+    .star-picker { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
+    .star-picker label {
+      cursor: pointer; font-size: 1.8rem; color: var(--border);
+      transition: color 0.15s, transform 0.1s;
+      line-height: 1;
+    }
+    .star-picker input { display: none; }
+    .star-picker input:checked ~ label,
+    .star-picker label:hover,
+    .star-picker label:hover ~ label { color: var(--border); }
+    .star-picker { direction: rtl; }
+    .star-picker label:hover,
+    .star-picker label:hover ~ label { color: var(--border); }
+    .star-picker input:checked ~ label { color: var(--border); }
+
+    /* RTL trick for stars */
+    #star-rating { direction: rtl; display: flex; }
+    #star-rating label { cursor: pointer; font-size: 2rem; color: var(--border); transition: color 0.15s; padding: 0 0.15rem; }
+    #star-rating input[type="radio"] { display: none; }
+    #star-rating input[type="radio"]:checked ~ label,
+    #star-rating label:hover,
+    #star-rating label:hover ~ label { color: #fdcb6e; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .form-group input, .form-group textarea, .form-group select {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 0.8rem 1rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="status.html">Statut</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
+  </nav>
+
+  <div class="avis-hero reveal">
+    <div class="section-label" style="justify-content:center;">Communauté</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">
+      Ce que disent<br/><span class="gradient-text">nos utilisateurs</span>
+    </h1>
+    <p class="section-subtitle" style="margin:0.75rem auto 0;text-align:center;">Des retours authentiques de la communauté NoctavHosting.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="reveal" style="max-width:700px;margin:0 auto;padding:0 5vw;">
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-big gradient-text">4.8</div>
+        <div class="stars">
+          <i data-lucide="star" class="star-fill" style="width:16px;height:16px;color:#fdcb6e;fill:#fdcb6e;"></i>
+          <i data-lucide="star" class="star-fill" style="width:16px;height:16px;color:#fdcb6e;fill:#fdcb6e;"></i>
+          <i data-lucide="star" class="star-fill" style="width:16px;height:16px;color:#fdcb6e;fill:#fdcb6e;"></i>
+          <i data-lucide="star" class="star-fill" style="width:16px;height:16px;color:#fdcb6e;fill:#fdcb6e;"></i>
+          <i data-lucide="star" style="width:16px;height:16px;color:#fdcb6e;fill:rgba(253,203,110,0.4);"></i>
+        </div>
+        <div class="stat-lbl">Note moyenne</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-big gradient-text">47</div>
+        <div class="stat-lbl">Avis vérifiés</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-big gradient-text">96%</div>
+        <div class="stat-lbl">Recommandent</div>
+      </div>
+    </div>
+
+    <div class="rating-bars reveal">
+      <div class="rating-row"><span>5</span><div class="rating-bar-bg"><div class="rating-bar-fill" style="width:78%"></div></div><span class="rating-count">37</span></div>
+      <div class="rating-row"><span>4</span><div class="rating-bar-bg"><div class="rating-bar-fill" style="width:14%"></div></div><span class="rating-count">7</span></div>
+      <div class="rating-row"><span>3</span><div class="rating-bar-bg"><div class="rating-bar-fill" style="width:6%"></div></div><span class="rating-count">3</span></div>
+      <div class="rating-row"><span>2</span><div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div><span class="rating-count">0</span></div>
+      <div class="rating-row"><span>1</span><div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div><span class="rating-count">0</span></div>
+    </div>
+  </div>
+
+  <!-- AVIS GRID -->
+  <div class="avis-grid" style="margin-top:3rem;" id="avis-container">
+
+    <div class="avis-card reveal" data-delay="0">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(108,92,231,0.15);color:var(--accent);">M</div>
+          <div class="avis-user">
+            <div class="avis-name">Mael_Dev</div>
+            <div class="avis-plan">Plan Pro</div>
+          </div>
+        </div>
+        <span class="avis-date">Mars 2026</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+      </div>
+      <p class="avis-text">J'héberge mon bot Discord depuis 3 mois maintenant, zéro downtime. Le panel est vraiment intuitif, même pour quelqu'un qui débute. Support ultra réactif sur Discord.</p>
+      <div class="avis-tag"><i data-lucide="bot"></i> Bot Discord</div>
+    </div>
+
+    <div class="avis-card reveal" data-delay="80">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(0,206,201,0.12);color:var(--accent2);">S</div>
+          <div class="avis-user">
+            <div class="avis-name">SkyBlock_Fr</div>
+            <div class="avis-plan">Plan Advanced</div>
+          </div>
+        </div>
+        <span class="avis-date">Mars 2026</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+      </div>
+      <p class="avis-text">Mon serveur Minecraft SkyBlock tourne parfaitement avec 30 joueurs simultanés. Le NVMe fait vraiment la différence sur les temps de chargement des chunks. Je recommande sans hésiter.</p>
+      <div class="avis-tag"><i data-lucide="gamepad-2"></i> Minecraft</div>
+    </div>
+
+    <div class="avis-card reveal" data-delay="160">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(253,121,168,0.12);color:var(--accent3);">L</div>
+          <div class="avis-user">
+            <div class="avis-name">LunaCode</div>
+            <div class="avis-plan">Plan Starter</div>
+          </div>
+        </div>
+        <span class="avis-date">Fév. 2026</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:var(--border);fill:var(--border);"></i>
+      </div>
+      <p class="avis-text">Très bon rapport qualité/prix pour débuter. J'aurais juste aimé un peu plus de RAM sur le plan Starter, mais le Starter+ est parfait pour mon usage. Noctavia a répondu en moins de 30 min sur Discord.</p>
+      <div class="avis-tag"><i data-lucide="bot"></i> Bot Python</div>
+    </div>
+
+    <div class="avis-card reveal" data-delay="240">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(108,92,231,0.15);color:var(--accent);">R</div>
+          <div class="avis-user">
+            <div class="avis-name">R4zen_GG</div>
+            <div class="avis-plan">Plan Expert</div>
+          </div>
+        </div>
+        <span class="avis-date">Fév. 2026</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+      </div>
+      <p class="avis-text">J'héberge 4 serveurs FiveM + 2 bots sur le plan Expert. Aucun problème depuis le lancement. L'isolation Docker est vraiment appréciable, les serveurs n'interfèrent pas entre eux.</p>
+      <div class="avis-tag"><i data-lucide="server"></i> FiveM</div>
+    </div>
+
+    <div class="avis-card reveal" data-delay="320">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(0,206,201,0.12);color:var(--accent2);">T</div>
+          <div class="avis-user">
+            <div class="avis-name">TechNocta</div>
+            <div class="avis-plan">Plan Pro</div>
+          </div>
+        </div>
+        <span class="avis-date">Jan. 2026</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+      </div>
+      <p class="avis-text">La migration vers Pyrodactyl a été transparente, aucune intervention manuelle requise. Le nouveau panel est bien plus rapide. Heureux d'être là depuis le lancement.</p>
+      <div class="avis-tag"><i data-lucide="layout-dashboard"></i> Panel</div>
+    </div>
+
+    <div class="avis-card reveal" data-delay="400">
+      <div class="avis-top">
+        <div style="display:flex;align-items:center;">
+          <div class="avis-avatar" style="background:rgba(253,121,168,0.12);color:var(--accent3);">K</div>
+          <div class="avis-user">
+            <div class="avis-name">KazuDev</div>
+            <div class="avis-plan">Plan Gratuit</div>
+          </div>
+        </div>
+        <span class="avis-date">Déc. 2025</span>
+      </div>
+      <div class="avis-stars">
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+        <i data-lucide="star" style="width:13px;height:13px;color:#fdcb6e;fill:#fdcb6e;"></i>
+      </div>
+      <p class="avis-text">Le plan gratuit est vraiment généreux pour tester. J'ai pu héberger mon premier bot sans payer un centime. Je vais passer au Pro ce mois-ci. Communauté super sympa sur Discord.</p>
+      <div class="avis-tag"><i data-lucide="gift"></i> Plan Gratuit</div>
+    </div>
+
+  </div>
+
+  <!-- FORMULAIRE -->
+  <div class="avis-form-section">
+    <div class="card reveal" style="padding:2.5rem;">
+      <div class="section-label" style="margin-bottom:0.75rem;">Votre avis</div>
+      <h2 class="section-title" style="font-size:1.5rem;margin-bottom:0.5rem;">Partagez votre expérience</h2>
+      <p style="color:var(--muted);font-size:0.87rem;margin-bottom:1.75rem;">Votre avis nous aide à améliorer le service pour tous.</p>
+
+      <div class="form-group">
+        <label>Pseudo Discord</label>
+        <input type="text" id="avis-pseudo" placeholder="tonpseudo"/>
+      </div>
+      <div class="form-group">
+        <label>Plan utilisé</label>
+        <select id="avis-plan">
+          <option value="">Choisir un plan</option>
+          <option>Gratuit</option>
+          <option>Starter</option>
+          <option>Pro</option>
+          <option>Advanced</option>
+          <option>Expert</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Note</label>
+        <div id="star-rating">
+          <label title="5 étoiles">★</label><input type="radio" name="rating" value="5"/>
+          <label title="4 étoiles">★</label><input type="radio" name="rating" value="4"/>
+          <label title="3 étoiles">★</label><input type="radio" name="rating" value="3"/>
+          <label title="2 étoiles">★</label><input type="radio" name="rating" value="2"/>
+          <label title="1 étoile">★</label><input type="radio" name="rating" value="1"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Votre avis</label>
+        <textarea id="avis-text" placeholder="Décrivez votre expérience avec NoctavHosting..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitAvis()">
+        Publier mon avis →
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="avis.html">Avis</a>
+      <a href="status.html">Statut</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Star rating interactivity
+    const labels = document.querySelectorAll('#star-rating label');
+    const inputs = document.querySelectorAll('#star-rating input');
+    labels.forEach((label, i) => {
+      label.addEventListener('click', () => inputs[i].checked = true);
+    });
+
+    function submitAvis() {
+      const pseudo = document.getElementById('avis-pseudo').value.trim();
+      const plan   = document.getElementById('avis-plan').value;
+      const text   = document.getElementById('avis-text').value.trim();
+      const rated  = document.querySelector('#star-rating input:checked');
+
+      if (!pseudo || !plan || !text || !rated) {
+        showToast('Remplis tous les champs et donne une note.', 'error');
+        return;
+      }
+
+      // Simule l'ajout
+      showToast('Avis envoyé ! Il sera visible après validation.', 'success', 5000);
+      document.getElementById('avis-pseudo').value = '';
+      document.getElementById('avis-plan').value = '';
+      document.getElementById('avis-text').value = '';
+      inputs.forEach(i => i.checked = false);
+    }
+  </script>
+</body>
+</html>

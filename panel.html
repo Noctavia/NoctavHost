@@ -6,6 +6,7 @@
   <title>Panel — NoctavHosting</title>
   <link rel="stylesheet" href="css/style.css"/>
   <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     .panel-hero {
       min-height: 90vh;
@@ -59,10 +60,14 @@
       padding: 0.4rem 0.9rem;
       border-radius: 6px;
       font-size: 0.78rem;
-      cursor: none;
+      cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
+    .copy-btn svg { width: 13px; height: 13px; }
     .copy-btn:hover { border-color: var(--accent); color: var(--text); }
 
     .panel-status {
@@ -100,16 +105,24 @@
       font-size: 0.87rem;
       line-height: 1.65;
     }
-    .info-card .icon {
-      font-size: 1.5rem;
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(108,92,231,0.12);
+      border: 1px solid rgba(108,92,231,0.2);
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
   <canvas id="bg-canvas"></canvas>
 
   <!-- NAV -->
@@ -122,7 +135,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
     </ul>
-    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
   </nav>
 
   <!-- HERO -->
@@ -143,13 +158,17 @@
         <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">
           Accéder au panel
         </h2>
-        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem;">
-          ⚠️ L'adresse du panel sera disponible une fois le domaine public configuré.
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;justify-content:center;">
+          <i data-lucide="alert-triangle" style="width:15px;height:15px;color:var(--warning);"></i>
+          L'adresse du panel sera disponible une fois le domaine public configuré.
         </p>
 
         <div class="panel-url-box">
           <span class="panel-url-text" id="panel-url-display">En attente du domaine public...</span>
-          <button class="copy-btn" onclick="copyUrl()">Copier</button>
+          <button class="copy-btn" onclick="copyUrl()">
+            <i data-lucide="copy"></i>
+            Copier
+          </button>
         </div>
 
         <a href="#" id="panel-link" class="btn btn-primary shimmer-btn" style="width:100%;justify-content:center;margin-bottom:1rem;" onclick="openPanel(event)">
@@ -165,22 +184,22 @@
   <!-- HOW TO USE -->
   <div class="info-cards">
     <div class="info-card reveal" data-delay="0">
-      <div class="icon">1️⃣</div>
+      <div class="step-num">1</div>
       <h3>Créer un compte</h3>
       <p>Connectez-vous au panel et créez votre compte avec l'email fourni lors de l'inscription.</p>
     </div>
     <div class="info-card reveal" data-delay="100">
-      <div class="icon">2️⃣</div>
+      <div class="step-num">2</div>
       <h3>Choisir un plan</h3>
       <p>Achetez des crédits sur la page <a href="pricing.html" style="color:var(--accent)">Tarifs</a> et activez les ressources de votre choix.</p>
     </div>
     <div class="info-card reveal" data-delay="200">
-      <div class="icon">3️⃣</div>
+      <div class="step-num">3</div>
       <h3>Déployer votre serveur</h3>
       <p>Sélectionnez votre type de serveur (Minecraft, Bot, FiveM...) et démarrez en un clic.</p>
     </div>
     <div class="info-card reveal" data-delay="300">
-      <div class="icon">4️⃣</div>
+      <div class="step-num">4</div>
       <h3>Gérer en temps réel</h3>
       <p>Console live, gestionnaire de fichiers, sauvegardes automatiques — tout depuis le panel.</p>
     </div>
@@ -188,7 +207,11 @@
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
     <div class="footer-links">
       <a href="index.html">Accueil</a>
       <a href="pricing.html">Tarifs</a>
@@ -199,14 +222,15 @@
 
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
-    // ⚠️ Remplace cette URL par ton vrai domaine public quand tu en auras un
+    lucide.createIcons();
     const PANEL_URL = 'https://adenological-sana-unexhaustedly.ngrok-free.dev';
 
     function openPanel(e) {
       if (!PANEL_URL) {
         e.preventDefault();
-        showToast('⚠️ Le panel n\'est pas encore accessible publiquement. Configure d\'abord ton domaine.', 'error', 5000);
+        showToast('Le panel n\'est pas encore accessible publiquement.', 'error', 5000);
       } else {
         window.open(PANEL_URL, '_blank');
       }
@@ -218,7 +242,7 @@
         return;
       }
       navigator.clipboard.writeText(PANEL_URL).then(() => {
-        showToast('✓ URL copiée !', 'success', 2000);
+        showToast('URL copiée !', 'success', 2000);
       });
     }
 

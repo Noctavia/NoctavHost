@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Changelog — NoctavHosting</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .changelog-layout {
+      max-width: 760px; margin: 0 auto; padding: 5rem 5vw 6rem;
+    }
+    .cl-hero { margin-bottom: 4rem; }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .cl-entry {
+      position: relative;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .cl-entry.visible { opacity: 1; transform: translateY(0); }
+
+    .cl-dot {
+      position: absolute;
+      left: -2rem;
+      top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      transform: translateX(-4.5px);
+    }
+    .cl-dot.minor { background: var(--accent2); box-shadow: 0 0 10px rgba(0,206,201,0.4); }
+    .cl-dot.fix   { background: var(--muted); box-shadow: none; }
+
+    .cl-header { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .cl-version {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--accent);
+      background: rgba(108,92,231,0.1);
+      border: 1px solid rgba(108,92,231,0.2);
+      padding: 0.15rem 0.65rem;
+      border-radius: 6px;
+    }
+    .cl-date { font-size: 0.78rem; color: var(--muted); }
+    .cl-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+    }
+    .cl-items { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .cl-item {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      font-size: 0.88rem; color: var(--muted); line-height: 1.55;
+    }
+    .cl-item-icon {
+      width: 18px; height: 18px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .cl-item-icon svg { width: 11px; height: 11px; }
+    .cl-item-icon.new  { background: rgba(108,92,231,0.15); color: var(--accent); }
+    .cl-item-icon.fix  { background: rgba(0,184,148,0.15);  color: var(--success); }
+    .cl-item-icon.warn { background: rgba(253,203,110,0.15); color: var(--warning); }
+    .cl-item-icon.rem  { background: rgba(253,121,168,0.15); color: var(--accent3); }
+
+    .cl-separator {
+      border: none; border-top: 1px solid var(--border);
+      margin: 0.5rem 0 2rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">NoctavHosting</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+      <li><a href="panel.html">Panel</a></li>
+      <li><a href="status.html">Statut</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
+    </ul>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
+  </nav>
+
+  <div class="changelog-layout">
+
+    <div class="cl-hero reveal">
+      <div class="section-label">Historique</div>
+      <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">
+        Changelog <span class="gradient-text">NoctavHosting</span>
+      </h1>
+      <p class="section-subtitle">Toutes les mises à jour, améliorations et correctifs du service.</p>
+    </div>
+
+    <hr class="cl-separator"/>
+
+    <div class="timeline">
+
+      <!-- v1.4 -->
+      <div class="cl-entry reveal">
+        <div class="cl-dot"></div>
+        <div class="cl-header">
+          <span class="cl-version">v1.4.0</span>
+          <span class="badge badge-accent">Dernière version</span>
+          <span class="cl-date">2 avril 2026</span>
+        </div>
+        <div class="cl-title">Nouveau site & refonte visuelle</div>
+        <ul class="cl-items">
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Refonte complète du site avec design sombre et particules animées</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Ajout des pages Statut, Changelog, Avis et chatbot de support</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Intégration des icônes Lucide en remplacement des emojis</li>
+          <li class="cl-item"><div class="cl-item-icon fix"><i data-lucide="check"></i></div>Suppression du curseur custom pour une meilleure compatibilité mobile</li>
+          <li class="cl-item"><div class="cl-item-icon fix"><i data-lucide="check"></i></div>Optimisation du chargement des pages et des animations</li>
+        </ul>
+      </div>
+
+      <!-- v1.3 -->
+      <div class="cl-entry reveal" data-delay="80">
+        <div class="cl-dot minor"></div>
+        <div class="cl-header">
+          <span class="cl-version">v1.3.2</span>
+          <span class="cl-date">18 mars 2026</span>
+        </div>
+        <div class="cl-title">Correctifs panel & paiements</div>
+        <ul class="cl-items">
+          <li class="cl-item"><div class="cl-item-icon fix"><i data-lucide="check"></i></div>Correction d'un bug d'inscription causant des doublons de compte</li>
+          <li class="cl-item"><div class="cl-item-icon fix"><i data-lucide="check"></i></div>Amélioration de la fiabilité du proxy d'inscription Pterodactyl</li>
+          <li class="cl-item"><div class="cl-item-icon warn"><i data-lucide="alert-triangle"></i></div>Mise à jour des liens PayPal.me suite au changement de compte</li>
+        </ul>
+      </div>
+
+      <!-- v1.3.0 -->
+      <div class="cl-entry reveal" data-delay="160">
+        <div class="cl-dot"></div>
+        <div class="cl-header">
+          <span class="cl-version">v1.3.0</span>
+          <span class="cl-date">4 février 2026</span>
+        </div>
+        <div class="cl-title">Système de crédits & nouveaux plans</div>
+        <ul class="cl-items">
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Lancement du plan Expert à 9,99€/mois avec serveurs illimités</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Mise en place du système de crédits pour le renouvellement des ressources</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Support FiveM ajouté sur tous les plans payants</li>
+          <li class="cl-item"><div class="cl-item-icon fix"><i data-lucide="check"></i></div>Amélioration des performances NVMe sur les nœuds d'hébergement</li>
+        </ul>
+      </div>
+
+      <!-- v1.2 -->
+      <div class="cl-entry reveal" data-delay="240">
+        <div class="cl-dot minor"></div>
+        <div class="cl-header">
+          <span class="cl-version">v1.2.0</span>
+          <span class="cl-date">10 janvier 2026</span>
+        </div>
+        <div class="cl-title">Migration vers Pyrodactyl</div>
+        <ul class="cl-items">
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Migration complète de Pterodactyl vers Pyrodactyl (fork moderne)</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Nouveau design du panel, plus rapide et plus accessible</li>
+          <li class="cl-item"><div class="cl-item-icon rem"><i data-lucide="minus"></i></div>Abandon du support de l'ancien panel — migration automatique des serveurs</li>
+        </ul>
+      </div>
+
+      <!-- v1.0 -->
+      <div class="cl-entry reveal" data-delay="320">
+        <div class="cl-dot fix"></div>
+        <div class="cl-header">
+          <span class="cl-version">v1.0.0</span>
+          <span class="badge" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border);">Initial</span>
+          <span class="cl-date">1 décembre 2025</span>
+        </div>
+        <div class="cl-title">Lancement de NoctavHosting</div>
+        <ul class="cl-items">
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Lancement public avec plans Gratuit, Starter, Pro et Advanced</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Support Minecraft Java/Bedrock, Bots Discord (Node.js, Python, Java)</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Infrastructure basée sur Pterodactyl + Docker</li>
+          <li class="cl-item"><div class="cl-item-icon new"><i data-lucide="plus"></i></div>Paiements via PayPal.me, activation manuelle sous 24h</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="changelog.html">Changelog</a>
+      <a href="status.html">Statut</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

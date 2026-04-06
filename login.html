@@ -6,6 +6,7 @@
   <title>NoctavHosting — Connexion / Inscription</title>
   <link rel="stylesheet" href="css/style.css"/>
   <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     .auth-wrapper {
       min-height: 92vh;
@@ -50,7 +51,7 @@
       font-size: 0.9rem;
       font-weight: 500;
       border-radius: 7px;
-      cursor: none;
+      cursor: pointer;
       transition: all 0.2s;
     }
     .auth-tab.active {
@@ -58,9 +59,7 @@
       color: #fff;
       box-shadow: 0 0 20px var(--accent-glow);
     }
-    .form-group {
-      margin-bottom: 1.1rem;
-    }
+    .form-group { margin-bottom: 1.1rem; }
     .form-group label {
       display: block;
       font-size: 0.8rem;
@@ -95,7 +94,7 @@
       font-family: 'Syne', sans-serif;
       font-size: 0.95rem;
       font-weight: 700;
-      cursor: none;
+      cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 0 25px var(--accent-glow);
       margin-top: 0.5rem;
@@ -145,12 +144,21 @@
       text-align: center;
       padding: 2rem 0;
     }
-    .panel-redirect .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .panel-redirect .success-icon {
+      width: 56px; height: 56px;
+      background: rgba(0,184,148,0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--success);
+    }
+    .panel-redirect .success-icon svg { width: 26px; height: 26px; }
   </style>
 </head>
 <body>
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
+
   <canvas id="bg-canvas"></canvas>
 
   <nav class="nav">
@@ -162,14 +170,19 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="pricing.html" class="nav-cta">Commencer →</a></li>
     </ul>
-    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
   </nav>
 
   <div class="auth-wrapper">
     <div class="auth-box reveal">
 
       <div style="text-align:center;margin-bottom:1.75rem;">
-        <div class="tag" style="margin:0 auto 1rem;">🔐 Espace membre</div>
+        <div class="tag" style="margin:0 auto 1rem;gap:0.5rem;">
+          <i data-lucide="lock" style="width:13px;height:13px;"></i>
+          Espace membre
+        </div>
         <h1 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;">
           Bienvenue sur<br/><span class="gradient-text">NoctavHosting</span>
         </h1>
@@ -222,7 +235,7 @@
 
       <!-- SUCCÈS REDIRECTION -->
       <div class="panel-redirect" id="panel-redirect">
-        <div class="big-icon">🎉</div>
+        <div class="success-icon"><i data-lucide="check-circle-2"></i></div>
         <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">Compte créé !</p>
         <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;">Tu vas être redirigé vers le panel dans quelques secondes...</p>
         <a id="panel-link" href="#" class="btn btn-primary" style="justify-content:center;">Accéder au panel →</a>
@@ -237,7 +250,11 @@
   </div>
 
   <footer>
-    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
     <div class="footer-links">
       <a href="index.html">Accueil</a>
       <a href="pricing.html">Tarifs</a>
@@ -248,9 +265,10 @@
 
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
-    // ── CONFIG ── À remplacer par ta vraie clé API admin Pterodactyl
-    const PANEL_URL   = 'https://adenological-sana-unexhaustedly.ngrok-free.dev';
+    lucide.createIcons();
+    const PANEL_URL = 'https://adenological-sana-unexhaustedly.ngrok-free.dev';
     let PROXY_URL = null;
 
     async function loadProxyUrl() {
@@ -293,14 +311,9 @@
       hideAlert();
       const email    = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
-
       if (!email || !password) return showAlert('Remplis tous les champs.', 'error');
-
       setLoading('btn-login', true);
-
       try {
-        // Pterodactyl n'a pas d'API login publique — on redirige vers le panel
-        // avec un message pour que l'utilisateur se connecte directement
         await new Promise(r => setTimeout(r, 800));
         window.open(PANEL_URL, '_blank');
         showAlert('Redirection vers le panel...', 'success');
@@ -321,10 +334,8 @@
 
       if (!firstname || !lastname || !username || !email || !password)
         return showAlert('Remplis tous les champs.', 'error');
-
       if (password.length < 8)
         return showAlert('Le mot de passe doit faire au moins 8 caractères.', 'error');
-
       if (!/^[a-zA-Z0-9_-]+$/.test(username))
         return showAlert('Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, _ et -.', 'error');
 
@@ -336,34 +347,21 @@
         const res = await fetch(PROXY_URL + '/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            username,
-            first_name: firstname,
-            last_name:  lastname,
-            password,
-          }),
+          body: JSON.stringify({ email, username, first_name: firstname, last_name: lastname, password }),
         });
-
         const data = await res.json();
-
         if (res.ok) {
-          // Succès
           document.getElementById('form-register').style.display = 'none';
           document.getElementById('panel-redirect').style.display = 'block';
           document.getElementById('panel-link').href = PANEL_URL;
           document.querySelector('.auth-divider').style.display = 'none';
           document.querySelector('.auth-tabs').style.display = 'none';
-
-          // Redirection auto après 4s
+          lucide.createIcons();
           setTimeout(() => { window.location.href = PANEL_URL; }, 4000);
-
         } else {
-          // Erreur API Pterodactyl
           const errMsg = data?.errors?.[0]?.detail || 'Erreur lors de la création du compte.';
           showAlert(errMsg, 'error');
         }
-
       } catch (e) {
         showAlert('Impossible de contacter le panel. Vérifie que le serveur est en ligne.', 'error');
       } finally {
@@ -371,7 +369,6 @@
       }
     }
 
-    // Enter pour valider
     document.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         if (document.getElementById('form-login').style.display !== 'none') handleLogin();

@@ -7,6 +7,7 @@
   <title>Tarifs — NoctavHosting</title>
   <link rel="stylesheet" href="css/style.css"/>
   <link rel="stylesheet" href="css/animations.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     .pricing-hero { padding: 6rem 5vw 3rem; text-align: center; }
     .plans-grid {
@@ -48,6 +49,9 @@
       border-radius: 99px;
       font-weight: 600;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
     }
     .plan-name {
       font-family: 'Syne', sans-serif;
@@ -129,7 +133,7 @@
       font-family: 'Syne', sans-serif;
       font-weight: 600;
       font-size: 1rem;
-      cursor: none;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -150,8 +154,6 @@
 </head>
 <body class="pricing-page">
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
   <canvas id="bg-canvas"></canvas>
 
   <nav class="nav">
@@ -163,7 +165,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="https://adenological-sana-unexhaustedly.ngrok-free.dev/login.html#register" class="nav-cta">S'inscrire →</a></li>
     </ul>
-    <button class="nav-mobile-btn" id="nav-mobile-btn">☰</button>
+    <button class="nav-mobile-btn" id="nav-mobile-btn">
+      <i data-lucide="menu" style="width:22px;height:22px;"></i>
+    </button>
   </nav>
 
   <div class="pricing-hero reveal">
@@ -211,7 +215,10 @@
 
     <!-- PRO -->
     <div class="plan-card featured reveal" data-delay="160">
-      <div class="plan-badge">⭐ Populaire</div>
+      <div class="plan-badge">
+        <i data-lucide="star" style="width:11px;height:11px;fill:#fff;"></i>
+        Populaire
+      </div>
       <div class="plan-name">Pro</div>
       <div class="plan-price gradient-text">3.99€</div>
       <div class="plan-period">par mois</div>
@@ -291,7 +298,11 @@
   </section>
 
   <footer>
-    <p>© 2026 NoctavHosting — Fait avec ❤️ par Noctavia</p>
+    <p>
+      © 2026 NoctavHosting — Fait avec
+      <i data-lucide="heart" style="width:13px;height:13px;color:var(--accent3);fill:var(--accent3);"></i>
+      par Noctavia
+    </p>
     <div class="footer-links">
       <a href="index.html">Accueil</a>
       <a href="pricing.html">Tarifs</a>
@@ -302,7 +313,9 @@
 
   <script src="js/particles.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
+    lucide.createIcons();
     document.querySelectorAll('.faq-q').forEach(q => {
       q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
     });
