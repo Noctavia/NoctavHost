@@ -104,4 +104,4 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
-Made with ❤️ by Kylia — NoctavHosting 2026
+Made with ❤️ by Nocta — NoctavHosting 2026
